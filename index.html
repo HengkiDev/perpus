@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Peminjaman Barang & Buku</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f1f5f9;
+        }
+
+        .split-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Sisi Kiri - Selamat Datang */
+        .welcome-section {
+            flex: 1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            max-width: 480px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .welcome-content h2 span {
+            color: #60a5fa;
+        }
+
+        .welcome-content .subtitle {
+            font-size: 18px;
+            color: #cbd5e1;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 32px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #e2e8f0;
+        }
+
+        .feature-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #60a5fa;
+            font-size: 14px;
+        }
+
+        .stat-badge {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            padding: 8px 20px;
+            display: inline-block;
+            font-size: 13px;
+            margin-top: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Sisi Kanan - Form Login */
+        .login-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 40px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-header {
+            margin-bottom: 32px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 15px;
+            transition: 0.2s;
+            outline: none;
+            background: #fefefe;
+        }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-login {
+            background: #3b82f6;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .demo-info {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 32px;
+            border: 1px solid #eef2ff;
+        }
+
+        .demo-info h4 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .demo-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 13px;
+        }
+
+        .demo-row:last-child {
+            border-bottom: none;
+        }
+
+        .demo-label {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .demo-value {
+            color: #3b82f6;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .split-container {
+                flex-direction: column;
+            }
+            .welcome-section {
+                padding: 48px 32px;
+            }
+            .login-section {
+                padding: 48px 24px;
+            }
+            .welcome-content h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <!-- Sisi Kiri: Selamat Datang -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h2>Selamat Datang di <span>Sistem Peminjaman</span></h2>
+                <p class="subtitle">
+                    Solusi digital untuk mengelola peminjaman barang dan buku di sekolah Anda. 
+                    Praktis, cepat, dan terintegrasi.
+                </p>
+
+                <ul class="feature-list">
+                    <li>
+                        <div class="feature-icon">+</div>
+                        <span>Kelola data barang dan buku dengan mudah</span>
+                    </li>
+                    <li>
+                        <div class="feature-icon">+</div>
+                        <span>Catat peminjaman dan pengembalian secara real-time</span>
+                    </li>
+                    <li>
+                        <div class="feature-icon">+</div>
+                        <span>Hitung denda otomatis jika terlambat</span>
+                    </li>
+                    <li>
+                        <div class="feature-icon">+</div>
+                        <span>Laporan lengkap bisa di-export ke PDF atau Excel</span>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <!-- Sisi Kanan: Form Login -->
+        <div class="login-section">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1>Masuk ke Akun</h1>
+                    <p>Silakan login untuk mengakses sistem peminjaman</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>Username atau NIS</label>
+                        <input type="text" id="username" placeholder="Masukkan username atau NIS" autocomplete="off" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Masukkan password" required>
+                    </div>
+
+                    <button type="submit" class="btn-login">Masuk ke Dashboard</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data user yang terdaftar (simulasi database)
+        const users = [
+            {
+                username: "admin",
+                password: "admin123",
+                role: "admin",
+                name: "Administrator",
+                id: "admin01"
+            },
+            {
+                username: "2021001",
+                password: "siswa123",
+                role: "siswa",
+                name: "Ahmad Fauzan",
+                id: "2021001",
+                kelas: "XI RPL 1",
+                noTelp: "08123456789"
+            },
+            {
+                username: "2021002",
+                password: "siswa123",
+                role: "siswa",
+                name: "Dina Karina",
+                id: "2021002",
+                kelas: "XI RPL 2",
+                noTelp: "081298765432"
+            },
+            {
+                username: "2021003",
+                password: "siswa123",
+                role: "siswa",
+                name: "Rizky Pratama",
+                id: "2021003",
+                kelas: "XII MM 1",
+                noTelp: "085678912345"
+            }
+        ];
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Cari user berdasarkan username
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Simpan data user ke local storage
+                const userData = {
+                    role: user.role,
+                    name: user.name,
+                    id: user.id
+                };
+                
+                // Tambahkan data khusus untuk siswa
+                if (user.role === 'siswa') {
+                    userData.kelas = user.kelas;
+                    userData.noTelp = user.noTelp;
+                }
+                
+                localStorage.setItem('loggedUser', JSON.stringify(userData));
+                
+                // Redirect sesuai role
+                if (user.role === 'admin') {
+                    window.location.href = 'dashboard_admin.html';
+                } else {
+                    window.location.href = 'dashboard_siswa.html';
+                }
+            } else {
+                alert('Login gagal! Periksa kembali username dan password Anda.\n\nDemo:\nAdmin: admin / admin123\nPeminjam: 2021001 / siswa123');
+            }
+        });
+    </script>
+</body>
+</html>

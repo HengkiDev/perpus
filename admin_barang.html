@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Data Barang & Buku</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #0f172a;
+            color: #e2e8f0;
+            flex-shrink: 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 28px 24px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .nav-menu {
+            padding: 20px 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: 12px;
+            transition: 0.2s;
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 8px 20px;
+            border-radius: 40px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .content-panel {
+            padding: 28px 32px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #eef2ff;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .btn-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #eef2ff;
+            vertical-align: middle;
+        }
+
+        th {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 30px;
+            outline: none;
+        }
+
+        .item-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+
+        .image-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Modal untuk tambah/edit barang */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            padding: 28px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #3b82f6;
+        }
+
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-submit {
+            background: #3b82f6;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>Admin Panel</h2>
+                <p>Manajemen Peminjaman</p>
+            </div>
+            <div class="nav-menu">
+                <a href="dashboard_admin.html" class="nav-item">Dashboard Utama</a>
+                <a href="admin_barang.html" class="nav-item active">Data Barang & Buku</a>
+                <a href="admin_peminjam.html" class="nav-item">Data Peminjam</a>
+                <a href="admin_peminjaman.html" class="nav-item">Peminjaman Aktif</a>
+                <a href="admin_riwayat.html" class="nav-item">Riwayat & Denda</a>
+                <a href="admin_laporan.html" class="nav-item">Laporan</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="page-title">Data Barang & Buku</div>
+                <div class="user-badge">
+                    <span>Administrator</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Daftar Semua Item</h3>
+                        <button class="btn-primary" id="btnTambahBarang">Tambah Item Baru</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Cari berdasarkan nama barang atau buku...">
+                        <button class="btn-secondary" onclick="filterItems()">Cari</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="itemsTable">
+                            <thead>
+                                <tr>
+                                    <th>Gambar</th>
+                                    <th>Kode</th>
+                                    <th>Nama Item</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Lokasi Rak</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody">
+                                <!-- Data akan diisi oleh javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Barang -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Item Baru</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="itemForm">
+                <input type="hidden" id="itemId" value="">
+                <div class="form-group">
+                    <label>Kode Item</label>
+                    <input type="text" id="kodeItem" placeholder="Contoh: BRG001" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Item</label>
+                    <input type="text" id="namaItem" placeholder="Nama barang atau buku" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="kategoriItem">
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Buku">Buku</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Alat Tulis">Alat Tulis</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input type="number" id="stokItem" placeholder="Jumlah stok" required>
+                </div>
+                <div class="form-group">
+                    <label>Lokasi Rak</label>
+                    <input type="text" id="lokasiItem" placeholder="Contoh: Rak A1" required>
+                </div>
+                <div class="form-group">
+                    <label>URL Gambar</label>
+                    <input type="text" id="gambarItem" placeholder="https://... atau nama file gambar">
+                    <small style="color:#64748b;">Masukkan URL gambar dari internet (contoh: https://picsum.photos/50/50?random=1)</small>
+                    <div id="imagePreviewContainer"></div>
+                </div>
+                <button type="submit" class="btn-submit">Simpan Item</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Cek login
+        const user = JSON.parse(localStorage.getItem('loggedUser'));
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        // Data barang dengan gambar
+        let items = [
+            {
+                id: 1,
+                kode: "BRG001",
+                nama: "Laptop Asus",
+                kategori: "Elektronik",
+                stok: 3,
+                lokasi: "Rak A1",
+                gambar: "https://picsum.photos/id/0/50/50"
+            },
+            {
+                id: 2,
+                kode: "BRG002",
+                nama: "Buku Pemrograman Web",
+                kategori: "Buku",
+                stok: 7,
+                lokasi: "Rak B2",
+                gambar: "https://picsum.photos/id/20/50/50"
+            },
+            {
+                id: 3,
+                kode: "BRG003",
+                nama: "Proyektor Infocus",
+                kategori: "Elektronik",
+                stok: 2,
+                lokasi: "Gudang 1",
+                gambar: "https://picsum.photos/id/26/50/50"
+            },
+            {
+                id: 4,
+                kode: "BRG004",
+                nama: "Buku Matematika Dasar",
+                kategori: "Buku",
+                stok: 5,
+                lokasi: "Rak C3",
+                gambar: "https://picsum.photos/id/24/50/50"
+            },
+            {
+                id: 5,
+                kode: "BRG005",
+                nama: "Meja Belajar",
+                kategori: "Furniture",
+                stok: 4,
+                lokasi: "Gudang 2",
+                gambar: "https://picsum.photos/id/12/50/50"
+            }
+        ];
+
+        let nextId = 6;
+
+        // Render tabel
+        function renderTable() {
+            const tbody = document.getElementById('itemsTableBody');
+            tbody.innerHTML = '';
+            
+            items.forEach(item => {
+                const row = tbody.insertRow();
+                
+                // Kolom Gambar
+                const imgCell = row.insertCell(0);
+                if (item.gambar && item.gambar !== '') {
+                    imgCell.innerHTML = `<img src="${item.gambar}" class="item-image" onerror="this.src='https://picsum.photos/id/1/50/50'">`;
+                } else {
+                    imgCell.innerHTML = `<div class="image-placeholder">No Image</div>`;
+                }
+                
+                // Kolom lainnya
+                row.insertCell(1).innerHTML = item.kode;
+                row.insertCell(2).innerHTML = item.nama;
+                row.insertCell(3).innerHTML = item.kategori;
+                row.insertCell(4).innerHTML = item.stok;
+                row.insertCell(5).innerHTML = item.lokasi;
+                
+                // Kolom Aksi
+                const actionCell = row.insertCell(6);
+                actionCell.innerHTML = `
+                    <button class="btn-secondary" onclick="editItem(${item.id})" style="margin-right:6px;">Edit</button>
+                    <button class="btn-danger" onclick="deleteItem(${item.id})">Hapus</button>
+                `;
+            });
+        }
+
+        // Filter pencarian
+        function filterItems() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = items.filter(item => 
+                item.nama.toLowerCase().includes(search) || 
+                item.kode.toLowerCase().includes(search) ||
+                item.kategori.toLowerCase().includes(search)
+            );
+            
+            const tbody = document.getElementById('itemsTableBody');
+            tbody.innerHTML = '';
+            
+            filtered.forEach(item => {
+                const row = tbody.insertRow();
+                
+                const imgCell = row.insertCell(0);
+                if (item.gambar && item.gambar !== '') {
+                    imgCell.innerHTML = `<img src="${item.gambar}" class="item-image" onerror="this.src='https://picsum.photos/id/1/50/50'">`;
+                } else {
+                    imgCell.innerHTML = `<div class="image-placeholder">No Image</div>`;
+                }
+                
+                row.insertCell(1).innerHTML = item.kode;
+                row.insertCell(2).innerHTML = item.nama;
+                row.insertCell(3).innerHTML = item.kategori;
+                row.insertCell(4).innerHTML = item.stok;
+                row.insertCell(5).innerHTML = item.lokasi;
+                
+                const actionCell = row.insertCell(6);
+                actionCell.innerHTML = `
+                    <button class="btn-secondary" onclick="editItem(${item.id})" style="margin-right:6px;">Edit</button>
+                    <button class="btn-danger" onclick="deleteItem(${item.id})">Hapus</button>
+                `;
+            });
+        }
+
+        // Preview gambar saat input URL
+        document.getElementById('gambarItem').addEventListener('input', function() {
+            const url = this.value;
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            if (url && (url.startsWith('http') || url.startsWith('https'))) {
+                previewContainer.innerHTML = `<img src="${url}" class="image-preview" onerror="this.src='https://picsum.photos/id/1/100/100'">`;
+            } else {
+                previewContainer.innerHTML = '';
+            }
+        });
+
+        // Tambah item
+        document.getElementById('btnTambahBarang').onclick = function() {
+            document.getElementById('modalTitle').innerText = 'Tambah Item Baru';
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemId').value = '';
+            document.getElementById('imagePreviewContainer').innerHTML = '';
+            document.getElementById('itemModal').style.display = 'flex';
+        };
+
+        // Edit item
+        window.editItem = function(id) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                document.getElementById('modalTitle').innerText = 'Edit Item';
+                document.getElementById('itemId').value = item.id;
+                document.getElementById('kodeItem').value = item.kode;
+                document.getElementById('namaItem').value = item.nama;
+                document.getElementById('kategoriItem').value = item.kategori;
+                document.getElementById('stokItem').value = item.stok;
+                document.getElementById('lokasiItem').value = item.lokasi;
+                document.getElementById('gambarItem').value = item.gambar || '';
+                
+                if (item.gambar) {
+                    document.getElementById('imagePreviewContainer').innerHTML = `<img src="${item.gambar}" class="image-preview">`;
+                } else {
+                    document.getElementById('imagePreviewContainer').innerHTML = '';
+                }
+                
+                document.getElementById('itemModal').style.display = 'flex';
+            }
+        };
+
+        // Hapus item
+        window.deleteItem = function(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                items = items.filter(i => i.id !== id);
+                renderTable();
+            }
+        };
+
+        // Submit form
+        document.getElementById('itemForm').onsubmit = function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('itemId').value;
+            const kode = document.getElementById('kodeItem').value;
+            const nama = document.getElementById('namaItem').value;
+            const kategori = document.getElementById('kategoriItem').value;
+            const stok = parseInt(document.getElementById('stokItem').value);
+            const lokasi = document.getElementById('lokasiItem').value;
+            const gambar = document.getElementById('gambarItem').value;
+            
+            if (id) {
+                // Edit existing
+                const index = items.findIndex(i => i.id === parseInt(id));
+                if (index !== -1) {
+                    items[index] = { ...items[index], kode, nama, kategori, stok, lokasi, gambar };
+                }
+            } else {
+                // Add new
+                items.push({
+                    id: nextId++,
+                    kode,
+                    nama,
+                    kategori,
+                    stok,
+                    lokasi,
+                    gambar
+                });
+            }
+            
+            closeModal();
+            renderTable();
+        };
+
+        function closeModal() {
+            document.getElementById('itemModal').style.display = 'none';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'login.html';
+        });
+
+        window.filterItems = filterItems;
+        window.closeModal = closeModal;
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peminjam - Sistem Peminjaman</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+        }
+
+        .navbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo h2 {
+            color: #0f172a;
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eef2ff;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eef2ff;
+        }
+
+        th {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .badge {
+            background: #dbeafe;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .info-banner {
+            background: #e0f2fe;
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <h2>Sistem Peminjaman</h2>
+        </div>
+        <div class="user-menu">
+            <span id="userNameDisplay">Ahmad Fauzan</span>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="info-banner">
+            <strong>Selamat datang, <span id="welcomeName">Ahmad Fauzan</span></strong>
+            <br>
+            NIS: <span id="userNis">2021001</span> | Kelas: <span id="userKelas">XI RPL 1</span> | No Telepon: <span id="userTelp">08123456789</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Koleksi Barang dan Buku</h3>
+                <button class="btn-secondary" onclick="alert('Silakan hubungi admin untuk melakukan peminjaman baru')">Informasi Peminjaman</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchItem" placeholder="Cari berdasarkan nama barang atau buku...">
+                <button class="btn-secondary" onclick="filterItems()">Cari</button>
+            </div>
+            <table id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>Nama Item</th>
+                        <th>Kategori</th>
+                        <th>Stok Tersedia</th>
+                        <th>Lokasi Rak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Laptop Asus</td><td>Elektronik</td><td>3</td><td>Rak A1</td></tr>
+                    <tr><td>Buku Pemrograman Web</td><td>Buku</td><td>7</td><td>Rak B2</td></tr>
+                    <tr><td>Proyektor Infocus</td><td>Elektronik</td><td>2</td><td>Gudang 1</td></tr>
+                    <tr><td>Buku Matematika Dasar</td><td>Buku</td><td>5</td><td>Rak C3</td></tr>
+                    <tr><td>Buku Sejarah Indonesia</td><td>Buku</td><td>4</td><td>Rak C1</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Riwayat Peminjaman Saya</h3>
+                <button class="btn-primary" onclick="alert('Ajukan peminjaman ke petugas perpustakaan dengan menunjukkan item yang diinginkan')">Ajukan Peminjaman</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Barang atau Buku</th>
+                        <th>Tanggal Pinjam</th>
+                        <th>Tanggal Kembali</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Laptop Asus</td>
+                        <td>10 Mei 2026</td>
+                        <td>-</td>
+                        <td><span class="badge">Dipinjam</span></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Buku Pemrograman Web</td>
+                        <td>20 April 2026</td>
+                        <td>27 April 2026</td>
+                        <td>Dikembalikan</td>
+                        <td>Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td>Proyektor Infocus</td>
+                        <td>1 April 2026</td>
+                        <td>8 April 2026</td>
+                        <td>Terlambat</td>
+                        <td>Rp 15.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Profil Saya</h3>
+                <button class="btn-secondary" onclick="alert('Edit nomor telepon atau password')">Edit Profil</button>
+            </div>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+                <div><strong>NIS:</strong> 2021001</div>
+                <div><strong>Nama:</strong> Ahmad Fauzan</div>
+                <div><strong>Kelas:</strong> XI RPL 1</div>
+                <div><strong>No Telepon:</strong> 08123456789</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('loggedUser'));
+        if (!userData || userData.role !== 'siswa') {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('welcomeName').innerText = userData.name;
+        document.getElementById('userNameDisplay').innerText = userData.name;
+        document.getElementById('userKelas').innerText = userData.kelas || 'XI RPL 1';
+        document.getElementById('userNis').innerText = userData.id;
+        document.getElementById('userTelp').innerText = userData.noTelp || '08123456789';
+
+        function filterItems() {
+            const search = document.getElementById('searchItem').value.toLowerCase();
+            const rows = document.querySelectorAll('#itemsTable tbody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'login.html';
+        });
+
+        window.filterItems = filterItems;
+    </script>
+</body>
+</html>

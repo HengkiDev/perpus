@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Laporan Peminjaman</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #0f172a;
+            color: #e2e8f0;
+            flex-shrink: 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 28px 24px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .nav-menu {
+            padding: 20px 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: 12px;
+            transition: 0.2s;
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 8px 20px;
+            border-radius: 40px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .content-panel {
+            padding: 28px 32px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #eef2ff;
+            margin-bottom: 28px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #eef2ff;
+        }
+
+        th {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .report-summary {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .report-summary-item {
+            text-align: center;
+        }
+
+        .report-summary-item .label {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .report-summary-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>Admin Panel</h2>
+                <p>Manajemen Peminjaman</p>
+            </div>
+            <div class="nav-menu">
+                <a href="dashboard_admin.html" class="nav-item">Dashboard Utama</a>
+                <a href="admin_barang.html" class="nav-item">Data Barang & Buku</a>
+                <a href="admin_peminjam.html" class="nav-item">Data Peminjam</a>
+                <a href="admin_peminjaman.html" class="nav-item">Peminjaman Aktif</a>
+                <a href="admin_riwayat.html" class="nav-item">Riwayat & Denda</a>
+                <a href="admin_laporan.html" class="nav-item active">Laporan</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="page-title">Laporan Peminjaman</div>
+                <div class="user-badge">
+                    <span>Administrator</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Generate Laporan</h3>
+                        <div>
+                            <button class="btn-primary" onclick="alert('Mencetak laporan dalam format PDF (Simulasi)')">Cetak PDF</button>
+                            <button class="btn-success" onclick="alert('Mengekspor laporan ke Excel (Simulasi)')">Export ke Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>Periode Mulai</label>
+                            <input type="date" id="tglMulai" value="2026-04-01">
+                        </div>
+                        <div class="filter-group">
+                            <label>Periode Sampai</label>
+                            <input type="date" id="tglSampai" value="2026-05-31">
+                        </div>
+                        <div class="filter-group">
+                            <label>Jenis Laporan</label>
+                            <select id="jenisLaporan">
+                                <option value="semua">Semua Peminjaman</option>
+                                <option value="selesai">Selesai Dikembalikan</option>
+                                <option value="denda">Denda Belum Lunas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button class="btn-secondary" onclick="filterLaporan()">Terapkan Filter</button>
+                        </div>
+                    </div>
+
+                    <div class="report-summary">
+                        <div class="report-summary-item">
+                            <div class="label">Total Peminjaman</div>
+                            <div class="value" id="totalPinjam">0</div>
+                        </div>
+                        <div class="report-summary-item">
+                            <div class="label">Total Denda</div>
+                            <div class="value" id="totalDenda">Rp 0</div>
+                        </div>
+                        <div class="report-summary-item">
+                            <div class="label">Rata-rata Lama Pinjam</div>
+                            <div class="value" id="rataLama">0 hari</div>
+                        </div>
+                    </div>
+
+                    <table id="laporanTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal Pinjam</th>
+                                <th>Tanggal Kembali</th>
+                                <th>Peminjam</th>
+                                <th>Barang atau Buku</th>
+                                <th>Lama Pinjam</th>
+                                <th>Denda</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>10 April 2026</td><td>17 April 2026</td><td>Ahmad Fauzan</td><td>Laptop Asus</td><td>7 hari</td><td>Rp 0</td><td>Selesai</td></tr>
+                            <tr><td>2</td><td>5 April 2026</td><td>12 April 2026</td><td>Siti Nurhaliza</td><td>Buku Matematika</td><td>7 hari</td><td>Rp 5.000</td><td>Selesai</td></tr>
+                            <tr><td>3</td><td>1 April 2026</td><td>8 April 2026</td><td>Rizky Pratama</td><td>Proyektor</td><td>7 hari</td><td>Rp 15.000</td><td>Selesai</td></tr>
+                            <tr><td>4</td><td>25 April 2026</td><td>2 Mei 2026</td><td>Budi Santoso</td><td>Buku Sejarah</td><td>7 hari</td><td>Rp 10.000</td><td>Denda Belum</td></tr>
+                            <tr><td>5</td><td>28 April 2026</td><td>5 Mei 2026</td><td>Citra Dewi</td><td>Laptop Asus</td><td>7 hari</td><td>Rp 7.000</td><td>Denda Belum</td></tr>
+                            <tr><td>6</td><td>20 Maret 2026</td><td>27 Maret 2026</td><td>Dina Karina</td><td>Buku Pemrograman</td><td>7 hari</td><td>Rp 0</td><td>Selesai</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('loggedUser'));
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        function filterLaporan() {
+            const jenis = document.getElementById('jenisLaporan').value;
+            const rows = document.querySelectorAll('#laporanTable tbody tr');
+            let totalPinjam = 0;
+            let totalDenda = 0;
+            let totalHari = 0;
+            let count = 0;
+
+            rows.forEach(row => {
+                const status = row.cells[7].innerText;
+                let show = true;
+                if (jenis === 'selesai' && status !== 'Selesai') show = false;
+                if (jenis === 'denda' && !status.includes('Denda')) show = false;
+                row.style.display = show ? '' : 'none';
+                
+                if (show) {
+                    const dendaText = row.cells[6].innerText.replace('Rp ', '').replace('.', '');
+                    const denda = parseInt(dendaText) || 0;
+                    const lamaText = row.cells[5].innerText.split(' ')[0];
+                    const lama = parseInt(lamaText) || 0;
+                    totalPinjam++;
+                    totalDenda += denda;
+                    totalHari += lama;
+                    count++;
+                }
+            });
+
+            document.getElementById('totalPinjam').innerText = totalPinjam;
+            document.getElementById('totalDenda').innerText = 'Rp ' + totalDenda.toLocaleString('id-ID');
+            const rataHari = count > 0 ? Math.round(totalHari / count) : 0;
+            document.getElementById('rataLama').innerText = rataHari + ' hari';
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'login.html';
+        });
+
+        window.filterLaporan = filterLaporan;
+        filterLaporan();
+    </script>
+</body>
+</html>
